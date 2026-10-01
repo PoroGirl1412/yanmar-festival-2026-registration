@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#e6002d">
+  <meta name="description" content="ลงทะเบียนเข้าร่วมงาน YANMAR Festival 2026">
+  <meta property="og:title" content="YANMAR Festival 2026 Registration">
+  <meta property="og:description" content="ลงทะเบียนเข้าร่วมงาน YANMAR Festival 2026">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://register.yanmarfestival2026.com/">
+  <title>YANMAR Festival 2026 Registration</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="./" aria-label="YANMAR Festival 2026">
+        <span class="brand-name">YANMAR</span>
+        <span class="brand-event">FESTIVAL 2026</span>
+      </a>
+      <span class="header-badge">REGISTRATION</span>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">YANMAR FESTIVAL 2026</p>
+      <h1 id="page-title">ลงทะเบียนเข้าร่วมงาน</h1>
+      <p>เลือกสถานที่และวันที่สะดวก แล้วกรอกข้อมูลเพื่อยืนยันสิทธิ์เข้าร่วมงาน</p>
+    </section>
+
+    <ol class="steps" aria-label="ขั้นตอนการลงทะเบียน">
+      <li class="active"><span>1</span>เลือกงาน</li>
+      <li><span>2</span>กรอกข้อมูล</li>
+      <li><span>3</span>ยืนยันสำเร็จ</li>
+    </ol>
+
+    <div id="loadingMaster" class="notice loading" role="status">กำลังเตรียมข้อมูลแบบฟอร์ม…</div>
+    <div id="globalError" class="notice error" role="alert" hidden></div>
+
+    <form id="registrationForm" class="form-card" novalidate hidden>
+      <section class="form-section">
+        <div class="section-heading">
+          <span class="section-number">01</span>
+          <div><h2>เลือกจังหวัดและวันที่จัดงาน</h2><p>สามารถเลือกเข้าร่วมได้มากกว่า 1 วันในจังหวัดเดียวกัน</p></div>
+        </div>
+        <fieldset class="field-block">
+          <legend>จังหวัดที่จัดงาน <b>*</b></legend>
+          <div id="venueOptions" class="venue-grid"></div>
+        </fieldset>
+        <fieldset id="dateFieldset" class="field-block" disabled>
+          <legend>วันที่เข้าร่วมงาน <b>*</b></legend>
+          <div id="dateOptions" class="date-grid"><p class="muted">เลือกจังหวัดก่อนเพื่อดูวันจัดงาน</p></div>
+        </fieldset>
+      </section>
+
+      <section class="form-section">
+        <div class="section-heading">
+          <span class="section-number">02</span>
+          <div><h2>ข้อมูลผู้ลงทะเบียน</h2><p>กรุณากรอกข้อมูลให้ตรงกับข้อมูลที่ใช้ติดต่อ</p></div>
+        </div>
+        <div class="form-grid two">
+          <label>ชื่อ <b>*</b><input name="FName_TH" autocomplete="given-name" maxlength="60" required></label>
+          <label>นามสกุล <b>*</b><input name="LName_TH" autocomplete="family-name" maxlength="60" required></label>
+          <label>เบอร์โทรศัพท์ <b>*</b><input name="telephone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" pattern="0[0-9]{8,9}" placeholder="0XXXXXXXXX" required></label>
+          <label>เพศ <b>*</b><select name="gender" data-master="gender" required><option value="">เลือกเพศ</option></select></label>
+          <label>อาชีพ <b>*</b><select name="occupation" data-master="occupation" required><option value="">เลือกอาชีพ</option></select></label>
+          <label>รายได้ต่อปี <b>*</b><select name="Annual_Income" data-master="Annual_Income" required><option value="">เลือกรายได้ต่อปี</option></select></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-heading">
+          <span class="section-number">03</span>
+          <div><h2>ข้อมูลการเพาะปลูก</h2><p>เลือกพืชที่ปลูกและระบุจำนวนพื้นที่โดยประมาณ</p></div>
+        </div>
+        <div class="crop-grid">
+          <label class="crop-card"><input type="checkbox" data-crop="rice"><span>ข้าว</span><input name="q_rice_field_amount" type="number" min="0" step="0.01" placeholder="จำนวนไร่" disabled></label>
+          <label class="crop-card"><input type="checkbox" data-crop="sugarcane"><span>อ้อย</span><input name="q_sugarcane_field_amount" type="number" min="0" step="0.01" placeholder="จำนวนไร่" disabled></label>
+          <label class="crop-card"><input type="checkbox" data-crop="cassava"><span>มันสำปะหลัง</span><input name="q_cassava_field_amount" type="number" min="0" step="0.01" placeholder="จำนวนไร่" disabled></label>
+          <label class="crop-card"><input type="checkbox" data-crop="corn"><span>ข้าวโพด</span><input name="q_corn_field_amount" type="number" min="0" step="0.01" placeholder="จำนวนไร่" disabled></label>
+          <label class="crop-card other"><input type="checkbox" data-crop="other"><span>พืชอื่น ๆ</span><input name="q_other_crop_name" maxlength="80" placeholder="ระบุชนิดพืช" disabled><input name="q_other_crop_amount" type="number" min="0" step="0.01" placeholder="จำนวนไร่" disabled></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-heading">
+          <span class="section-number">04</span>
+          <div><h2>ที่อยู่ปัจจุบัน</h2><p>ใช้สำหรับการประสานงานเกี่ยวกับกิจกรรม</p></div>
+        </div>
+        <div class="form-grid two">
+          <label class="full">บ้านเลขที่ / หมู่ / ถนน <b>*</b><input name="house_no" autocomplete="street-address" maxlength="120" required></label>
+          <label>จังหวัด <b>*</b><select id="province" name="province" required><option value="">เลือกจังหวัด</option></select></label>
+          <label>อำเภอ/เขต <b>*</b><select id="district" name="district" required disabled><option value="">เลือกอำเภอ/เขต</option></select></label>
+          <label>ตำบล/แขวง <b>*</b><select id="subdistrict" name="sub_district" required disabled><option value="">เลือกตำบล/แขวง</option></select></label>
+          <label>รหัสไปรษณีย์ <b>*</b><input id="postalCode" name="postal_code" inputmode="numeric" maxlength="5" readonly required></label>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="section-heading">
+          <span class="section-number">05</span>
+          <div><h2>ความสนใจและแผนการซื้อ</h2><p>ข้อมูลนี้ช่วยให้ทีมงานจัดกิจกรรมและคำแนะนำได้เหมาะสม</p></div>
+        </div>
+        <div class="form-grid two">
+          <label>รู้จักงานจากช่องทางใด <b>*</b><select name="q_news_channel" data-master="q_news_channel" required><option value="">เลือกช่องทาง</option></select></label>
+          <label>ผู้แทนจำหน่ายที่ดูแล <b>*</b><select id="dealer" name="q_dealer" required><option value="">เลือกผู้แทนจำหน่าย</option></select></label>
+          <label>ปัจจุบันมีรถแทรกเตอร์หรือไม่ <b>*</b><select name="current_tractor" data-master="current_tractor" required><option value="">เลือกคำตอบ</option></select></label>
+          <label>รถแทรกเตอร์มีห้องโดยสารปรับอากาศหรือไม่<select name="current_tractor_air_cabin"><option value="">เลือกคำตอบ</option><option>มี</option><option>ไม่มี</option></select></label>
+          <fieldset class="full choice-box"><legend>ผลิตภัณฑ์ที่ใช้อยู่ในปัจจุบัน</legend><div id="usedProducts" class="check-grid"></div></fieldset>
+          <fieldset class="full choice-box"><legend>สินค้าที่สนใจ <b>*</b></legend><div id="interestProducts" class="check-grid"></div></fieldset>
+          <label>แผนการซื้อ <b>*</b><select name="q_purchase_planning" data-master="q_purchase_planning" required><option value="">เลือกแผนการซื้อ</option></select></label>
+          <label>เงื่อนไขหรือรายละเอียดเพิ่มเติม<input name="q_purchase_condition" maxlength="200" placeholder="ถ้ามี"></label>
+        </div>
+      </section>
+
+      <section class="consent-card">
+        <label class="consent-line"><input id="pdpa" type="checkbox" required><span>ข้าพเจ้าได้อ่านและรับทราบประกาศการใช้ข้อมูลส่วนบุคคลสำหรับการลงทะเบียนและเช็กอินงาน YANMAR Festival 2026 <b>*</b></span></label>
+        <details><summary>อ่านประกาศข้อมูลส่วนบุคคล</summary><div class="pdpa-text"><p>บริษัท ยันม่าร์ เอส.พี. จำกัด ใช้ข้อมูลที่ท่านกรอกเพื่อจัดการลงทะเบียน ตรวจสอบรายการซ้ำ ติดต่อเกี่ยวกับงาน และยืนยันการเข้าร่วม ณ จุดเช็กอิน รวมถึงดำเนินกิจกรรมตามที่แจ้งไว้</p><p>ท่านสามารถติดต่อเกี่ยวกับข้อมูลส่วนบุคคลได้ที่ ysp-privacy@yanmar.com หรือโทร 02-326-0700 ต่อ 826</p></div></details>
+      </section>
+
+      <input name="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+      <button id="submitButton" class="primary-button" type="submit">ยืนยันการลงทะเบียน</button>
+      <p id="submitStatus" class="submit-status" role="status"></p>
+    </form>
+
+    <section id="successPanel" class="success-card" hidden>
+      <div class="success-icon">✓</div>
+      <p class="eyebrow">REGISTRATION COMPLETE</p>
+      <h2>ลงทะเบียนสำเร็จ</h2>
+      <p>กรุณาบันทึกเลขลงทะเบียนนี้ไว้สำหรับการเช็กอิน</p>
+      <div id="registrationNumbers" class="registration-numbers"></div>
+      <button id="newRegistration" class="secondary-button" type="button">ลงทะเบียนรายการใหม่</button>
+    </section>
+  </main>
+
+  <footer><strong>YANMAR</strong><span>A SUSTAINABLE FUTURE FOR GENERATIONS</span></footer>
+
+  <iframe name="apiFrame" id="apiFrame" title="Registration service" hidden></iframe>
+  <form id="apiForm" action="https://script.google.com/macros/s/AKfycbxmRI2xGW9K9mDrpADuOIkqwJXc44p-M3FBx4txdkLsbWrcytl-78ZMl5Q45BJ1t8dp/exec" method="post" target="apiFrame" hidden>
+    <input name="payload" id="apiPayload">
+  </form>
+  <script src="app.js" defer></script>
+</body>
+</html>
