@@ -2018,3 +2018,56 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
 </body>
 </html>
 
+<script>
+/* 2026-10-02: dealer and purchase plan are independent required questions. */
+(function () {
+  const originalValidate = validateAgricultureAndTractor;
+  const originalCollect = collectFormData;
+  window.handleProductInterest = function (input) {
+    if (input.id === 'notInterested' && input.checked) {
+      document.querySelectorAll('input[name="product_interest"]').forEach(el => { if (el !== input) el.checked = false; });
+    } else if (input.checked) $('notInterested').checked = false;
+    $('interestFollowup').classList.remove('hidden');
+    togglePurchaseCondition();
+  };
+  window.validateAgricultureAndTractor = function () {
+    if (!value('current_tractor')) { showError('กรุณาตอบว่าปัจจุบันท่านมีรถแทรกเตอร์หรือไม่'); $('current_tractor').focus(); return false; }
+    if (!choices('product_interest').length) { showError('กรุณาเลือกผลิตภัณฑ์ที่สนใจ หรือเลือกไม่สนใจผลิตภัณฑ์ในขณะนี้'); $('notInterested').focus(); return false; }
+    if (!value('dealer')) { showError('กรุณาเลือกตัวแทนจำหน่ายที่ท่านรู้จัก หรือเลือกอื่นๆ'); $('dealer').focus(); return false; }
+    if (!dealerData.includes(value('dealer'))) { showError('กรุณาเลือกตัวแทนจำหน่ายจากรายการ หรือเลือกอื่นๆ'); $('dealer').focus(); return false; }
+    if (value('dealer') === 'อื่นๆ' && !value('dealer_other')) { showError('กรุณาระบุตัวแทนจำหน่ายอื่นๆ'); $('dealer_other').focus(); return false; }
+    if (!value('purchase_plan')) { showError('กรุณาเลือกแผนการซื้อ'); $('purchase_plan').focus(); return false; }
+    if (value('purchase_plan') !== 'ยังไม่มีแผน' && !value('purchase_condition')) { showError('กรุณาเลือกว่าท่านสนใจรถมือหนึ่ง มือสอง หรือกำลังตัดสินใจ'); $('purchase_condition').focus(); return false; }
+    return originalValidate();
+  };
+  window.collectFormData = function () {
+    const data = originalCollect();
+    data.dealer = value('dealer') === 'อื่นๆ' ? 'อื่นๆ : ' + value('dealer_other') : value('dealer');
+    data.purchasePlan = value('purchase_plan');
+    return data;
+  };
+  function mountRequiredQuestions() {
+    $('interestFollowup').classList.remove('hidden', 'conditional');
+    ['dealer', 'purchase_plan'].forEach(id => $(id).required = true);
+    document.querySelectorAll('#step3 .main-label').forEach(label => {
+      if (label.parentElement.contains($('news_channel'))) return;
+      if (!label.querySelector('.required')) label.insertAdjacentHTML('beforeend', ' <span class="required">*</span>');
+    });
+    [['dealer_other', 'โปรดระบุตัวแทนจำหน่ายอื่นๆ'], ['other_brand_text', 'โปรดระบุยี่ห้อรถแทรกเตอร์อื่นๆ']].forEach(([id, text]) => {
+      const input = $(id);
+      const label = document.createElement('label');
+      label.htmlFor = id;
+      label.className = 'main-label hidden';
+      label.innerHTML = text + ' <span class="required">*</span>';
+      input.before(label);
+      const sync = () => { const visible = !input.classList.contains('hidden'); label.classList.toggle('hidden', !visible); input.required = visible; };
+      new MutationObserver(sync).observe(input, { attributes: true, attributeFilter: ['class'] });
+      sync();
+    });
+    togglePurchaseCondition();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountRequiredQuestions, { once: true });
+  else mountRequiredQuestions();
+})();
+</script>
+
