@@ -1509,8 +1509,11 @@ function loadSheetData(sheet) {
     window[callback]=response=>{
       cleanup();
       if(response?.status!=='ok'||!Array.isArray(response.table?.rows)){reject(new Error('โหลดข้อมูล '+sheet+' ไม่สำเร็จ'));return;}
-      const rows=response.table.rows.map(row=>(row.c||[]).map(cell=>String(cell?.v??'').trim()));
-      const headers=rows.shift()||[];
+      const columns=response.table.cols||[];
+      const labels=columns.map(column=>String(column.label||'').trim());
+      const hasColumnLabels=labels.length>0&&labels.every(Boolean);
+      const rows=response.table.rows.map(row=>(row.c||[]).map(cell=>String(cell?.f??cell?.v??'').trim()));
+      const headers=hasColumnLabels?labels:(rows.shift()||[]);
       resolve(rows.filter(row=>row.some(Boolean)).map(row=>Object.fromEntries(headers.map((header,index)=>[header,row[index]||'']))));
     };
     script.onerror=()=>{cleanup();reject(new Error('เชื่อมต่อข้อมูล '+sheet+' ไม่สำเร็จ'));};
