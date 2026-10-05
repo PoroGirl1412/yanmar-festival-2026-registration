@@ -1509,6 +1509,16 @@ function loadSheetData(sheet) {
     window[callback]=response=>{
       cleanup();
       if(response?.status!=='ok'||!Array.isArray(response.table?.rows)){reject(new Error('โหลดข้อมูล '+sheet+' ไม่สำเร็จ'));return;}
+      if(sheet==='Address_Master'){
+        const addresses=response.table.rows.map(row=>row.c||[]).map(cells=>({
+          province:String(cells[0]?.f??cells[0]?.v??'').trim(),
+          postal_code:String(cells[1]?.f??cells[1]?.v??'').trim(),
+          district:String(cells[2]?.f??cells[2]?.v??'').trim(),
+          subdistrict:String(cells[3]?.f??cells[3]?.v??'').trim()
+        })).filter(row=>row.province&&row.province!=='province');
+        resolve(addresses);
+        return;
+      }
       const columns=response.table.cols||[];
       const labels=columns.map(column=>String(column.label||'').trim());
       const hasColumnLabels=labels.length>0&&labels.every(Boolean);
