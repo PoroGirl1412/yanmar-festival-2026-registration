@@ -708,6 +708,25 @@ STEP 02
 
 <div class="field">
 
+<label class="main-label" for="citizenId">
+เลขบัตรประจำตัวประชาชน <span class="required">*</span>
+</label>
+
+<input
+  id="citizenId"
+  type="text"
+  inputmode="numeric"
+  autocomplete="off"
+  maxlength="13"
+  pattern="[0-9]{13}"
+  required
+  placeholder="กรอกเลขบัตรประชาชน 13 หลัก">
+
+</div>
+
+
+<div class="field">
+
 <label class="main-label">
 เพศ
 </label>
@@ -1594,10 +1613,11 @@ function showStep(step) {
 function previousStep(step) { if(!busy) showStep(Math.max(1,step-1)); }
 function validatePersonal() {
   if(!dataReady) { showError('กรุณารอข้อมูลโหลดสำเร็จ หรือกดลองโหลดข้อมูลอีกครั้ง');return false; }
-  for(const [id,label] of [['firstName','ชื่อ'],['lastName','นามสกุล'],['telephone','เบอร์โทรศัพท์'],['province','จังหวัด'],['district','อำเภอ'],['sub_district','ตำบล']]) {
+  for(const [id,label] of [['firstName','ชื่อ'],['lastName','นามสกุล'],['telephone','เบอร์โทรศัพท์'],['citizenId','เลขบัตรประจำตัวประชาชน'],['province','จังหวัด'],['district','อำเภอ'],['sub_district','ตำบล']]) {
     if(!value(id)) {showError('กรุณากรอกหรือเลือก'+label);$(id).focus();return false;}
   }
   if(!/^0\d{9}$/.test(value('telephone'))) {showError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก ขึ้นต้นด้วย 0');$('telephone').focus();return false;}
+  if(!/^\d{13}$/.test(value('citizenId'))) {showError('กรุณากรอกเลขบัตรประจำตัวประชาชนเป็นตัวเลข 13 หลัก');$('citizenId').focus();return false;}
   return validateCrops();
 }
 function identity() {return JSON.stringify([value('firstName'),value('lastName'),value('telephone'),choices('event_date').slice().sort()]);}
@@ -1722,7 +1742,7 @@ function collectFormData() {
   const formData={
     privacyAcknowledged:$('privacyAcknowledged').checked,marketingConsent:false,privacyVersion:'festival-2026-v1',
     phoneReuseAcknowledged:phoneReuseIdentity===identity(),
-    eventDates:choices('event_date'),firstName:value('firstName'),lastName:value('lastName'),telephone:value('telephone'),
+    eventDates:choices('event_date'),firstName:value('firstName'),lastName:value('lastName'),telephone:value('telephone'),citizenId:value('citizenId'),
     gender:value('gender'),houseNo:value('house_no'),province:value('province'),district:value('district'),subDistrict:value('sub_district'),postalCode:value('postal_code'),
     occupation:value('occupation'),annualIncome:value('annual_income'),agriculture:isAgriculture()?'ทำ':'',currentTractor:value('current_tractor'),tractorAirCabin:value('current_tractor')==='มี'?value('tractor_air_cabin'):'',
     otherCropName:isAgriculture()&&$('other_crop').checked?value('other_crop_name'):'',otherCropAmount:isAgriculture()&&$('other_crop').checked?value('other_crop_amount'):'',
@@ -1777,7 +1797,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     <h3>1. ผู้รับผิดชอบข้อมูล</h3>
     <p>บริษัท ยันม่าร์ เอส.พี. จำกัด ดูแลข้อมูลส่วนบุคคลที่ท่านให้ไว้สำหรับงาน YANMAR Festival 2026 ตามวัตถุประสงค์ที่แจ้งในประกาศนี้</p>
     <h3>2. ข้อมูลที่ใช้</h3>
-    <p>ข้อมูลในแบบฟอร์มประกอบด้วยชื่อ เบอร์โทรศัพท์ ที่อยู่ เพศ อาชีพ รายได้ ข้อมูลการเพาะปลูก รถที่ใช้งาน ความสนใจสินค้า ผู้แทนจำหน่าย แผนการซื้อ และวันที่เข้าร่วมงาน ระบบบันทึกหมายเลขลงทะเบียน สถานะและเวลาเช็กอิน รวมถึงการรับทราบประกาศ</p>
+    <p>ข้อมูลในแบบฟอร์มประกอบด้วยชื่อ เบอร์โทรศัพท์ เลขบัตรประจำตัวประชาชน ที่อยู่ เพศ อาชีพ รายได้ ข้อมูลการเพาะปลูก รถที่ใช้งาน ความสนใจสินค้า ผู้แทนจำหน่าย แผนการซื้อ และวันที่เข้าร่วมงาน ระบบบันทึกหมายเลขลงทะเบียน สถานะและเวลาเช็กอิน รวมถึงการรับทราบประกาศ</p>
     <h3>3. วัตถุประสงค์การใช้ข้อมูล</h3>
     <p>ใช้จัดการรายชื่อผู้เข้าร่วม ตรวจสอบข้อมูลซ้ำ ติดต่อประสานงาน ยืนยันตัวตนในการเช็กอิน และจัดกิจกรรมให้สอดคล้องกับข้อมูลและความสนใจที่ท่านระบุ รวมถึงดูแลความปลอดภัยของระบบและปฏิบัติตามกฎหมาย หากไม่ให้ข้อมูลที่ระบุว่าจำเป็น ระบบอาจไม่สามารถดำเนินการลงทะเบียนหรือเช็กอินได้</p>
     <p>การกดรับทราบประกาศนี้ไม่ถือเป็นการให้ความยินยอมรับข่าวสารหรือโปรโมชันทางการตลาด</p>
