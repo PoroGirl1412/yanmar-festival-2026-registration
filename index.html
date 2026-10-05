@@ -919,7 +919,7 @@ STEP 03
 
 <div
   id="plantSection"
-  class="conditional hidden">
+  class="conditional">
 
 <label class="main-label">
 ท่านปลูกพืชชนิดใด?
@@ -1327,7 +1327,7 @@ STEP 04
 ท่านมีแผนที่จะซื้อผลิตภัณฑ์ของยันม่าร์ภายในช่วงระยะเวลาใด?
 </label>
 
-<select id="purchase_plan">
+<select id="purchase_plan" required>
 
 <option value="">
 เลือกแผนการซื้อ
@@ -1746,10 +1746,8 @@ function toggleOtherBrand() {
 function handleProductInterest(input) {
   if(input.id==='notInterested' && input.checked) document.querySelectorAll('input[name="product_interest"]').forEach(el=>{if(el!==input)el.checked=false;});
   else if(input.checked) $('notInterested').checked=false;
-  const show=choices('product_interest').some(x=>x!==$('notInterested').value);
-  $('interestFollowup').classList.toggle('hidden',!show);
-  if(!show){$('dealer').value='';$('dealer_other').value='';$('dealer_other').classList.add('hidden');$('purchase_plan').value='';}
-  $('purchase_plan').required=show;
+  $('interestFollowup').classList.remove('hidden');
+  $('purchase_plan').required=true;
   togglePurchaseCondition();
 }
 function toggleOtherDealer() {
@@ -1771,10 +1769,9 @@ function validateAgricultureAndTractor() {
     if(!choices('current_brand').length) {showError('กรุณาเลือกยี่ห้อรถแทรกเตอร์ที่ใช้งานอยู่');$('brandSection').scrollIntoView({behavior:'smooth',block:'center'});return false;}
     if($('brandOther').checked&&!value('other_brand_text')) {showError('กรุณาระบุยี่ห้อรถแทรกเตอร์อื่นๆ');$('other_brand_text').focus();return false;}
   }
-  const hasInterest=choices('product_interest').some(x=>x!==$('notInterested').value);
-  if(hasInterest&&!value('purchase_plan')){showError('กรุณาเลือกแผนการซื้อ');$('purchase_plan').focus();return false;}
-  if(hasInterest&&value('purchase_plan')!=='ยังไม่มีแผน'&&!value('purchase_condition')){showError('กรุณาเลือกว่าท่านสนใจรถมือหนึ่ง มือสอง หรือกำลังตัดสินใจ');$('purchase_condition').focus();return false;}
-  if(hasInterest&&value('dealer')) {
+  if(!value('purchase_plan')){showError('กรุณาเลือกแผนการซื้อ');$('purchase_plan').focus();return false;}
+  if(value('purchase_plan')!=='ยังไม่มีแผน'&&!value('purchase_condition')){showError('กรุณาเลือกว่าท่านสนใจรถมือหนึ่ง มือสอง หรือกำลังตัดสินใจ');$('purchase_condition').focus();return false;}
+  if(value('dealer')) {
     if(!dealerData.includes(value('dealer'))) {showError('กรุณาเลือกตัวแทนจำหน่ายจากรายการ หรือเลือก “อื่นๆ”');$('dealer').focus();return false;}
     if(value('dealer')==='อื่นๆ'&&!value('dealer_other')) {showError('กรุณาระบุตัวแทนจำหน่ายอื่นๆ');$('dealer_other').focus();return false;}
   }
