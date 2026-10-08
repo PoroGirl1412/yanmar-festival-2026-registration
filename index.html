@@ -259,6 +259,29 @@ select:disabled {
   display: none !important;
 }
 
+.dealer-options {
+  max-height: 190px;
+  overflow-y: auto;
+  margin-top: 6px;
+  border: 1px solid #bbb;
+  background: white;
+}
+
+.dealer-options button {
+  display: block;
+  width: 100%;
+  padding: 10px 13px;
+  border: 0;
+  background: white;
+  text-align: left;
+  font: inherit;
+}
+
+.dealer-options button:focus,
+.dealer-options button:hover {
+  background: #fff0f3;
+}
+
 .navigation {
   display: flex;
   gap: 12px;
@@ -1306,11 +1329,12 @@ STEP 04
 <input
   id="dealer"
   type="text"
-  list="dealerOptions"
   autocomplete="off"
+  aria-controls="dealerOptions"
+  aria-autocomplete="list"
   placeholder="พิมพ์เพื่อค้นหาตัวแทนจำหน่าย">
 
-<datalist id="dealerOptions"></datalist>
+<div id="dealerOptions" class="dealer-options hidden" role="listbox"></div>
 
 <input
   id="dealer_other"
@@ -1578,7 +1602,18 @@ function loadDealerOptions() {
   "อื่นๆ",
   "ไม่มี"
 ];
-  $('dealerOptions').replaceChildren(...dealerData.map(text=>new Option(text,text)));
+  $('dealerOptions').replaceChildren(...dealerData.map(text=>{
+    const option=document.createElement('button');
+    option.type='button';option.textContent=text;option.setAttribute('role','option');
+    return option;
+  }));
+}
+function filterDealerOptions() {
+  const query=value('dealer').toLocaleLowerCase();
+  const list=$('dealerOptions');
+  [...list.children].forEach(option=>option.classList.toggle('hidden',!option.textContent.toLocaleLowerCase().includes(query)));
+  list.classList.remove('hidden');
+  toggleOtherDealer();
 }
 function loadProvince() { addOptions('province',addressData.map(row=>row.province).sort((a,b)=>a.localeCompare(b,'th'))); }
 function resetAddress(id) { $(id).length=1; $(id).disabled=true; }
@@ -1890,7 +1925,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('news_channel').addEventListener('change',toggleSalesPersonField);
   toggleSalesPersonField();
   $('current_tractor').addEventListener('change',toggleTractor);
-  $('dealer').addEventListener('input',toggleOtherDealer);
+  $('dealer').addEventListener('input',filterDealerOptions);
+  $('dealer').addEventListener('focus',filterDealerOptions);
+  $('dealerOptions').addEventListener('click',event=>{
+    const option=event.target.closest('button');
+    if(!option)return;
+    $('dealer').value=option.textContent;
+    $('dealerOptions').classList.add('hidden');
+    toggleOtherDealer();
+  });
+  document.addEventListener('click',event=>{
+    if(!event.target.closest('#dealer, #dealerOptions'))$('dealerOptions').classList.add('hidden');
+  });
   ['rice','sugarcane','cassava','corn'].forEach(id=>$(id+'_amount').step='any');
   $('errorMessage').setAttribute('role','alert');
   loadInitialData();
