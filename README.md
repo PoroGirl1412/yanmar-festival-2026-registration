@@ -3,6 +3,7 @@
 GitHub Pages entry point for the deployed Apps Script registration page.
 
 - Live URL: `https://porogirl1412.github.io/yanmar-festival-2026-registration/`
+- https://porogirl1412.github.io/yanmar-festival-2026-registration/checkin.html
 - Data source: existing Google Sheets master data
 - Submission backend: existing Google Apps Script deployment
 
