@@ -1,6 +1,6 @@
 # YANMAR Festival 2026 Registration
 
-Static registration frontend for GitHub Pages.
+GitHub Pages entry point for the deployed Apps Script registration page.
 
 - Live URL: `https://porogirl1412.github.io/yanmar-festival-2026-registration/`
 - Data source: existing Google Sheets master data
@@ -8,4 +8,4 @@ Static registration frontend for GitHub Pages.
 
 The public frontend contains no staff credentials or private API keys.
 
-The HTML, embedded artwork, CSS, form steps and validation match the original Apps Script index.html. Only rpc() is replaced with a request-ID-based POST/postMessage transport. Both registration pages call the original public registration functions on the same backend. No custom domain is required.
+The page displays the existing Apps Script deployment in a full-window iframe. Layout, artwork, form steps, validation, duplicate checks, registration saves and the check-in link all run in the deployed app using its original Google Sheets backend. Updates to that deployment appear here automatically. The deployment already permits iframe embedding. No custom domain or separate API transport is required.
