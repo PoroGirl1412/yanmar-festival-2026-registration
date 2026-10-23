@@ -259,29 +259,6 @@ select:disabled {
   display: none !important;
 }
 
-.dealer-options {
-  max-height: 190px;
-  overflow-y: auto;
-  margin-top: 6px;
-  border: 1px solid #bbb;
-  background: white;
-}
-
-.dealer-options button {
-  display: block;
-  width: 100%;
-  padding: 10px 13px;
-  border: 0;
-  background: white;
-  text-align: left;
-  font: inherit;
-}
-
-.dealer-options button:focus,
-.dealer-options button:hover {
-  background: #fff0f3;
-}
-
 .navigation {
   display: flex;
   gap: 12px;
@@ -439,7 +416,7 @@ button {
 <div id="formArea">
 
 
-<!-- PROGRESS -->
+
 
 <div class="progress-area">
 
@@ -467,9 +444,7 @@ button {
 </div>
 
 
-<!-- =====================================================
-     STEP 1
-===================================================== -->
+
 
 <section
   id="step1"
@@ -664,9 +639,7 @@ YANMAR Festival 2026<br>
 </section>
 
 
-<!-- =====================================================
-     STEP 2
-===================================================== -->
+
 
 <section
   id="step2"
@@ -726,23 +699,7 @@ STEP 02
   inputmode="numeric"
   placeholder="เช่น 0812345678">
 
-</div>
 
-
-<div class="field">
-
-<label class="main-label" for="citizenId">
-เลขบัตรประจำตัวประชาชน
-</label>
-
-<input
-  id="citizenId"
-  type="text"
-  inputmode="numeric"
-  autocomplete="off"
-  maxlength="13"
-  pattern="[0-9]{13}"
-  placeholder="กรอกเลขบัตรประชาชน 13 หลัก">
 
 </div>
 
@@ -906,9 +863,7 @@ STEP 02
 </section>
 
 
-<!-- =====================================================
-     STEP 3
-===================================================== -->
+
 
 <section
   id="step3"
@@ -1183,9 +1138,7 @@ color:#666;">
 </section>
 
 
-<!-- =====================================================
-     STEP 4
-===================================================== -->
+
 
 <section
   id="step4"
@@ -1198,10 +1151,10 @@ STEP 04
 <div class="field">
 
 <label class="main-label">
-ท่านทราบข่าวสารจากช่องทางใด?
+ท่านทราบข่าวสารจากช่องทางใด? <span class="required">*</span>
 </label>
 
-<select id="news_channel">
+<select id="news_channel" required>
 
 <option value="">
 เลือกช่องทาง
@@ -1212,15 +1165,14 @@ STEP 04
 </div>
 
 <div class="field hidden" id="salesPersonField">
-<label class="main-label" for="salesPersonName">โปรดระบุชื่อพนักงานขาย <span class="required">*</span></label>
+<label class="main-label" for="salesPersonName">โปรดระบุชื่อพนักงานขาย</label>
 <input id="salesPersonName" type="text" autocomplete="name" placeholder="กรอกชื่อพนักงานขาย">
 </div>
-
 
 <div class="field">
 
 <label class="main-label">
-ท่านมีความสนใจในผลิตภัณฑ์ใดของทางยันม่าร์?
+ท่านมีความสนใจในผลิตภัณฑ์ใดของทางยันม่าร์? <span class="required">*</span>
 </label>
 
 
@@ -1322,19 +1274,13 @@ STEP 04
 
 <div class="field">
 
-<label class="main-label">
-โปรดเลือกตัวแทนจำหน่ายยันม่าร์ที่ท่านรู้จัก
+<label class="main-label" for="dealer">
+โปรดเลือกตัวแทนจำหน่ายยันม่าร์ที่ท่านรู้จัก <span class="required">*</span>
 </label>
 
-<input
-  id="dealer"
-  type="text"
-  autocomplete="off"
-  aria-controls="dealerOptions"
-  aria-autocomplete="list"
-  placeholder="พิมพ์เพื่อค้นหาตัวแทนจำหน่าย">
-
-<div id="dealerOptions" class="dealer-options hidden" role="listbox"></div>
+<select id="dealer" required>
+<option value="">เลือกตัวแทนจำหน่าย</option>
+</select>
 
 <input
   id="dealer_other"
@@ -1430,7 +1376,7 @@ STEP 04
 </div>
 
 
-<!-- SUCCESS -->
+
 
 <div
   id="successPage"
@@ -1456,6 +1402,8 @@ Registration ID
 
 </div>
 
+<a id="successCheckinLink" class="btn-primary" href="https://script.google.com/macros/s/AKfycbxmRI2xGW9K9mDrpADuOIkqwJXc44p-M3FBx4txdkLsbWrcytl-78ZMl5Q45BJ1t8dp/exec?page=checkin&amp;event=ALL" target="_top" style="display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 25px;margin-top:24px;font-size:15px;font-weight:bold;text-decoration:none">ไปหน้าเช็คอิน</a>
+
 </div>
 
 
@@ -1466,7 +1414,7 @@ Registration ID
 
 
 <script>
-/* Complete client logic. All server calls use the existing Apps Script contract. */
+
 let addressData = [];
 let masterData = {};
 let dealerData = [];
@@ -1525,38 +1473,6 @@ function rpc(name, ...args) {
     form.submit();
   });
 }
-function loadSheetData(sheet) {
-  return new Promise((resolve,reject)=>{
-    const callback='yfSheet_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-    const script=document.createElement('script');
-    const cleanup=()=>{clearTimeout(timer);delete window[callback];script.remove();};
-    window[callback]=response=>{
-      cleanup();
-      if(response?.status!=='ok'||!Array.isArray(response.table?.rows)){reject(new Error('โหลดข้อมูล '+sheet+' ไม่สำเร็จ'));return;}
-      if(sheet==='Address_Master'){
-        const addresses=response.table.rows.map(row=>row.c||[]).map(cells=>({
-          province:String(cells[0]?.f??cells[0]?.v??'').trim(),
-          postal_code:String(cells[1]?.f??cells[1]?.v??'').trim(),
-          district:String(cells[2]?.f??cells[2]?.v??'').trim(),
-          subdistrict:String(cells[3]?.f??cells[3]?.v??'').trim()
-        })).filter(row=>row.province&&row.province!=='province');
-        resolve(addresses);
-        return;
-      }
-      const columns=response.table.cols||[];
-      const labels=columns.map(column=>String(column.label||'').trim());
-      const hasColumnLabels=labels.length>0&&labels.every(Boolean);
-      const rows=response.table.rows.map(row=>(row.c||[]).map(cell=>String(cell?.f??cell?.v??'').trim()));
-      const headers=hasColumnLabels?labels:(rows.shift()||[]);
-      resolve(rows.filter(row=>row.some(Boolean)).map(row=>Object.fromEntries(headers.map((header,index)=>[header,row[index]||'']))));
-    };
-    script.onerror=()=>{cleanup();reject(new Error('เชื่อมต่อข้อมูล '+sheet+' ไม่สำเร็จ'));};
-    const timer=setTimeout(()=>{cleanup();reject(new Error('โหลดข้อมูล '+sheet+' ใช้เวลานานเกินไป'));},20000);
-    const params=new URLSearchParams({tqx:'out:json;responseHandler:'+callback,sheet});
-    script.src='https://docs.google.com/spreadsheets/d/1jiLASp9amBPKSfOt3lqSjA7SUUSGyiLMb2jH-lgSFDs/gviz/tq?'+params;
-    document.head.appendChild(script);
-  });
-}
 function addOptions(id, values) {
   const element = $(id);
   if (!element || !Array.isArray(values)) return;
@@ -1602,18 +1518,9 @@ function loadDealerOptions() {
   "อื่นๆ",
   "ไม่มี"
 ];
-  $('dealerOptions').replaceChildren(...dealerData.map(text=>{
-    const option=document.createElement('button');
-    option.type='button';option.textContent=text;option.setAttribute('role','option');
-    return option;
-  }));
-}
-function filterDealerOptions() {
-  const query=value('dealer').toLocaleLowerCase();
-  const list=$('dealerOptions');
-  [...list.children].forEach(option=>option.classList.toggle('hidden',!option.textContent.toLocaleLowerCase().includes(query)));
-  list.classList.remove('hidden');
-  toggleOtherDealer();
+  const selected=$('dealer').value;
+  $('dealer').replaceChildren(new Option('เลือกตัวแทนจำหน่าย',''),...dealerData.map(text=>new Option(text,text)));
+  $('dealer').value=dealerData.includes(selected)?selected:'';
 }
 function loadProvince() { addOptions('province',addressData.map(row=>row.province).sort((a,b)=>a.localeCompare(b,'th'))); }
 function resetAddress(id) { $(id).length=1; $(id).disabled=true; }
@@ -1640,10 +1547,9 @@ async function loadInitialData() {
   $('dataStatus').textContent='กำลังโหลดข้อมูลสำหรับลงทะเบียน…';
   $('retryData').classList.add('hidden');
   try {
-    const [addresses,masters,dealers]=await Promise.all(['Address_Master','Master','Dealer_Master'].map(loadSheetData));
-    addressData=addresses.map(row=>({...row,sub_district:row.subdistrict}));
-    masterData=Object.fromEntries(Object.keys(masters[0]||{}).map(key=>[key,masters.map(row=>row[key])]));
-    dealerData=dealers.map(row=>row.Dealer_Name).filter(Boolean);
+    const data=await Promise.all([rpc('getAddressData'),rpc('getMasterData'),rpc('getDealerData')]);
+    addressData=(data[0]||[]).map(row=>Object.fromEntries(Object.entries(row).map(([key,val])=>[key,String(val??'').trim()])));
+    masterData=data[1]||{};dealerData=data[2]||[];
     if(!addressData.length) throw new Error('ไม่พบข้อมูลที่อยู่ใน Address_Master');
     loadProvince();
     const mapping={gender:'gender',occupation:'occupation',annual_income:'Annual_Income'};
@@ -1689,7 +1595,6 @@ function validatePersonal() {
     if(!value(id)) {showError('กรุณากรอกหรือเลือก'+label);$(id).focus();return false;}
   }
   if(!/^0\d{9}$/.test(value('telephone'))) {showError('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก ขึ้นต้นด้วย 0');$('telephone').focus();return false;}
-  if(value('citizenId')&&!/^\d{13}$/.test(value('citizenId'))) {showError('เลขบัตรประจำตัวประชาชนต้องเป็นตัวเลข 13 หลัก');$('citizenId').focus();return false;}
   return validateCrops();
 }
 function identity() {return JSON.stringify([value('firstName'),value('lastName'),value('telephone'),choices('event_date').slice().sort()]);}
@@ -1785,27 +1690,29 @@ function handleProductInterest(input) {
   $('purchase_plan').required=true;
   togglePurchaseCondition();
 }
+function toggleSalesPersonField() {
+  const show=value('news_channel')==='พนักงานขาย-ผู้แทนจำหน่าย';
+  $('salesPersonField').classList.toggle('hidden',!show);
+  $('salesPersonName').required=false;
+  if(!show)$('salesPersonName').value='';
+}
 function toggleOtherDealer() {
   const other=value('dealer')==='อื่นๆ';
   $('dealer_other').classList.toggle('hidden',!other);
   if(!other)$('dealer_other').value='';
 }
-function toggleSalesPersonField() {
-  const show=value('news_channel')==='พนักงานขาย-ผู้แทนจำหน่าย';
-  $('salesPersonField').classList.toggle('hidden',!show);
-  $('salesPersonName').required=show;
-  if(!show)$('salesPersonName').value='';
-}
 function validateAgricultureAndTractor() {
-  if(value('news_channel')==='พนักงานขาย-ผู้แทนจำหน่าย'&&!value('salesPersonName')) {showError('กรุณาระบุชื่อพนักงานขาย');$('salesPersonName').focus();return false;}
   if(!value('current_tractor')) {showError('กรุณาตอบว่าปัจจุบันท่านมีรถแทรกเตอร์หรือไม่');$('current_tractor').focus();return false;}
   if(value('current_tractor')==='มี') {
     if(!value('tractor_air_cabin')) {showError('กรุณาตอบว่ารถแทรกเตอร์ที่ใช้งานอยู่เป็นตู้แอร์หรือไม่');$('tractor_air_cabin').focus();return false;}
     if(!choices('current_brand').length) {showError('กรุณาเลือกยี่ห้อรถแทรกเตอร์ที่ใช้งานอยู่');$('brandSection').scrollIntoView({behavior:'smooth',block:'center'});return false;}
     if($('brandOther').checked&&!value('other_brand_text')) {showError('กรุณาระบุยี่ห้อรถแทรกเตอร์อื่นๆ');$('other_brand_text').focus();return false;}
   }
+  if(!value('news_channel')) {showError('กรุณาเลือกช่องทางที่ทราบข่าวสาร');$('news_channel').focus();return false;}
+  if(!choices('product_interest').length) {showError('กรุณาเลือกผลิตภัณฑ์ที่สนใจ หรือเลือกไม่สนใจในขณะนี้');document.querySelector('input[name="product_interest"]').focus();return false;}
   if(!value('purchase_plan')){showError('กรุณาเลือกแผนการซื้อ');$('purchase_plan').focus();return false;}
   if(value('purchase_plan')!=='ยังไม่มีแผน'&&!value('purchase_condition')){showError('กรุณาเลือกว่าท่านสนใจรถมือหนึ่ง มือสอง หรือกำลังตัดสินใจ');$('purchase_condition').focus();return false;}
+  if(!value('dealer')) {showError('กรุณาเลือกตัวแทนจำหน่าย');$('dealer').focus();return false;}
   if(value('dealer')) {
     if(!dealerData.includes(value('dealer'))) {showError('กรุณาเลือกตัวแทนจำหน่ายจากรายการ หรือเลือก “อื่นๆ”');$('dealer').focus();return false;}
     if(value('dealer')==='อื่นๆ'&&!value('dealer_other')) {showError('กรุณาระบุตัวแทนจำหน่ายอื่นๆ');$('dealer_other').focus();return false;}
@@ -1818,7 +1725,7 @@ function collectFormData() {
   const formData={
     privacyAcknowledged:$('privacyAcknowledged').checked,marketingConsent:false,privacyVersion:'festival-2026-v1',
     phoneReuseAcknowledged:phoneReuseIdentity===identity(),
-    eventDates:choices('event_date'),firstName:value('firstName'),lastName:value('lastName'),telephone:value('telephone'),citizenId:value('citizenId'),
+    eventDates:choices('event_date'),firstName:value('firstName'),lastName:value('lastName'),telephone:value('telephone'),citizenId:'',
     gender:value('gender'),houseNo:value('house_no'),province:value('province'),district:value('district'),subDistrict:value('sub_district'),postalCode:value('postal_code'),
     occupation:value('occupation'),annualIncome:value('annual_income'),agriculture:isAgriculture()?'ทำ':'',currentTractor:value('current_tractor'),tractorAirCabin:value('current_tractor')==='มี'?value('tractor_air_cabin'):'',
     otherCropName:isAgriculture()&&$('other_crop').checked?value('other_crop_name'):'',otherCropAmount:isAgriculture()&&$('other_crop').checked?value('other_crop_amount'):'',
@@ -1847,7 +1754,7 @@ async function registerUser() {
   setBusy(true);
   $('submitButton').textContent='กำลังลงทะเบียน…';
   try {
-    // Recheck if identity changed since the personal-details step.
+
     if(duplicateIdentity!==identity()) {
       const duplicate=await rpc('checkDuplicateRegistration',value('firstName'),value('lastName'),value('telephone'),choices('event_date'));
       if(duplicate?.duplicate) {showDuplicateMessage(duplicate.registrationId);return;}
@@ -1873,7 +1780,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     <h3>1. ผู้รับผิดชอบข้อมูล</h3>
     <p>บริษัท ยันม่าร์ เอส.พี. จำกัด ดูแลข้อมูลส่วนบุคคลที่ท่านให้ไว้สำหรับงาน YANMAR Festival 2026 ตามวัตถุประสงค์ที่แจ้งในประกาศนี้</p>
     <h3>2. ข้อมูลที่ใช้</h3>
-    <p>ข้อมูลในแบบฟอร์มประกอบด้วยชื่อ เบอร์โทรศัพท์ เลขบัตรประจำตัวประชาชน ที่อยู่ เพศ อาชีพ รายได้ ข้อมูลการเพาะปลูก รถที่ใช้งาน ความสนใจสินค้า ผู้แทนจำหน่าย แผนการซื้อ และวันที่เข้าร่วมงาน ระบบบันทึกหมายเลขลงทะเบียน สถานะและเวลาเช็กอิน รวมถึงการรับทราบประกาศ</p>
+    <p>ข้อมูลในแบบฟอร์มประกอบด้วยชื่อ เบอร์โทรศัพท์ ที่อยู่ เพศ อาชีพ รายได้ ข้อมูลการเพาะปลูก รถที่ใช้งาน ความสนใจสินค้า ชื่อพนักงานขายที่ระบุ ผู้แทนจำหน่าย แผนการซื้อ และวันที่เข้าร่วมงาน ระบบบันทึกหมายเลขลงทะเบียน สถานะและเวลาเช็กอิน รวมถึงการรับทราบประกาศ</p>
     <h3>3. วัตถุประสงค์การใช้ข้อมูล</h3>
     <p>ใช้จัดการรายชื่อผู้เข้าร่วม ตรวจสอบข้อมูลซ้ำ ติดต่อประสานงาน ยืนยันตัวตนในการเช็กอิน และจัดกิจกรรมให้สอดคล้องกับข้อมูลและความสนใจที่ท่านระบุ รวมถึงดูแลความปลอดภัยของระบบและปฏิบัติตามกฎหมาย หากไม่ให้ข้อมูลที่ระบุว่าจำเป็น ระบบอาจไม่สามารถดำเนินการลงทะเบียนหรือเช็กอินได้</p>
     <p>การกดรับทราบประกาศนี้ไม่ถือเป็นการให้ความยินยอมรับข่าวสารหรือโปรโมชันทางการตลาด</p>
@@ -1922,28 +1829,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('purchase_plan').closest('.field').insertAdjacentHTML('afterend','<div id="purchaseConditionSection" class="field hidden"><label class="main-label" for="purchase_condition">ท่านสนใจรถแบบใด? <span class="required">*</span></label><select id="purchase_condition"><option value="">เลือกคำตอบ</option><option value="รถมือหนึ่ง">รถมือหนึ่ง</option><option value="รถมือสอง">รถมือสอง</option><option value="กำลังตัดสินใจ">กำลังตัดสินใจ</option></select></div>');
   $('occupation').addEventListener('change',toggleAgriculture);
   $('purchase_plan').addEventListener('change',togglePurchaseCondition);
-  $('news_channel').addEventListener('change',toggleSalesPersonField);
-  toggleSalesPersonField();
   $('current_tractor').addEventListener('change',toggleTractor);
-  $('dealer').addEventListener('input',filterDealerOptions);
-  $('dealer').addEventListener('focus',filterDealerOptions);
-  $('dealerOptions').addEventListener('click',event=>{
-    const option=event.target.closest('button');
-    if(!option)return;
-    $('dealer').value=option.textContent;
-    $('dealerOptions').classList.add('hidden');
-    toggleOtherDealer();
-  });
-  document.addEventListener('click',event=>{
-    if(!event.target.closest('#dealer, #dealerOptions'))$('dealerOptions').classList.add('hidden');
-  });
+  $('dealer').addEventListener('change',toggleOtherDealer);
+  $('news_channel').addEventListener('change',toggleSalesPersonField);
   ['rice','sugarcane','cassava','corn'].forEach(id=>$(id+'_amount').step='any');
   $('errorMessage').setAttribute('role','alert');
   loadInitialData();
 });
 
 </script>
-<!-- ธีมหน้าเปิดรวมอยู่ในไฟล์เต็มแล้ว ไม่ต้องวางโค้ดเสริมเพิ่ม -->
+
 <style>
 body.yf-ready{--red:#e60028;--dark-red:#bd0022;background:#f5f6f8;color:#20232b;font-family:Tahoma,Arial,sans-serif;line-height:1.6}
 .yf-ready .header{padding:18px 24px;border:0}.yf-ready .header-inner{max-width:1060px}.yf-ready .brand{font-size:27px;letter-spacing:-1px}.yf-ready .event-name{font-size:12px;letter-spacing:2px;color:#424650}.yf-ready .topbar{height:4px}
@@ -1956,7 +1851,7 @@ body.yf-ready{--red:#e60028;--dark-red:#bd0022;background:#f5f6f8;color:#20232b;
 .yf-ready input[type=text],.yf-ready input[type=tel],.yf-ready input[type=number],.yf-ready select{border-radius:8px;border-color:#d4d8df}.yf-ready .choice-box{border-radius:10px;overflow:hidden}.yf-ready .conditional{border-radius:8px}.yf-marketing-heading{font-size:23px;margin:30px 0 20px;padding-top:26px;border-top:1px solid #e6e8ec}.yf-footer{text-align:center;font-size:11px;color:#898d96;letter-spacing:1px;padding:0 20px 30px}.yf-error{padding:14px;border:1px solid #e60028;color:#a90020;background:#fff0f3}
 @media(max-width:640px){.yf-ready .header{padding:14px 18px}.yf-ready .brand{font-size:23px}.yf-ready .event-name{font-size:10px;letter-spacing:1px}.yf-hero{padding:30px 22px 62px}.yf-hero h1{letter-spacing:-1px}.yf-hero p{font-size:14px}.yf-hero-meta{gap:6px}.yf-hero-meta span{font-size:11px;padding:4px 10px}.yf-ready .page{padding:0 12px}.yf-ready .card{padding:24px 18px;border-radius:16px}.yf-stepper{gap:7px;margin-bottom:22px;padding-bottom:22px}.yf-stepper li{font-size:10px;gap:6px;flex-direction:column;text-align:center}.yf-stepper li:after{display:none}.yf-stepper b{width:30px;height:30px}.yf-ready h1{font-size:23px}.yf-provinces{gap:8px}.yf-province{padding:25px 5px 13px;flex-direction:column;gap:7px;text-align:center}.yf-province strong{font-size:14px}.yf-province small{font-size:8px;letter-spacing:.3px}.yf-province input{right:8px;top:8px}.yf-pin{width:32px;height:34px}.yf-dates{grid-template-columns:1fr}.yf-date{padding:14px}.yf-date-head{flex-wrap:wrap;margin-bottom:12px}.yf-date-head .yf-section-title{margin-bottom:0}.yf-ready .btn-primary{flex:1}.yf-ready .navigation{gap:8px}.yf-ready button{padding:0 18px}.yf-ready .yf-section-title{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.yf-ready *{scroll-behavior:auto!important;transition:none!important}}
-/* Reference-matched layout v2. Images are embedded for Apps Script portability. */
+
 body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#252525}
 .yf-ready .topbar{display:none}.yf-ready .header{height:58px;padding:12px 5%;background:#fff}.yf-ready .header-inner{max-width:1200px}.yf-ready .brand{font-family:Arial,sans-serif;font-style:italic;font-weight:900;font-size:29px;color:#dc0029}.yf-ready .brand:before{content:'❯❯';display:inline-block;transform:rotate(90deg);font-size:20px;margin-right:15px}.yf-ready .event-name{letter-spacing:0;font-size:12px}
 .yf-hero{background:#e8edef center center/cover no-repeat;color:#202020;padding:0;height:270px;overflow:hidden}.yf-hero:after{display:none}.yf-hero-inner{max-width:1200px;height:100%;margin:auto;padding:35px 0;position:relative}.yf-hero .yf-eyebrow{font-size:15px;letter-spacing:0;font-weight:400;color:#676c70;margin:0 0 8px}.yf-ready .yf-hero h1{font-family:Tahoma,Arial,sans-serif;font-size:34px;font-weight:800;letter-spacing:-.8px;line-height:1.3;margin:0 0 7px}.yf-ready .yf-hero h1 span{color:#d60028;font-family:Arial,sans-serif;font-size:39px;font-weight:800;letter-spacing:-1px}.yf-hero p{font-size:16px;color:#5d6266;line-height:1.4;margin:0}.yf-go{position:absolute;left:58%;top:24px;font:bold italic 29px Arial}.yf-go em{color:#d60028}.yf-go small{display:block;font:italic 9px Arial;text-align:center;color:#353535}
@@ -1973,9 +1868,8 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
 .yf-ready .brand:before{display:none}.yf-ready .brand{max-width:190px}.yf-panel-icon svg{width:28px;height:28px}.yf-ready .header-inner{height:100%}@media(max-width:640px){.yf-ready .brand{max-width:155px}}
 </style>
 <script>
-/* Presentation adapter for the four-step index.html from the referenced conversation.
-   Existing registerUser(), master/address data and saveRegistration() stay intact.
-   event_date values remain exactly the backend EVENT_CONFIG keys. */
+
+
 (function () {
   'use strict';
   function mount() {
@@ -2022,12 +1916,21 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
       const label = document.createElement('label');
       label.className = 'yf-province';
       label.innerHTML = '<input type="radio" name="yf_event_province" value="'+event.key+'" aria-controls="yf-date-area">'+landmark(event.key)+'<span><strong>'+event.name+'</strong></span><span class="yf-arrow" aria-hidden="true">›</span>';
+      if (event.key === 'SISAKET') {
+        label.querySelector('input').disabled = true;
+        label.style.opacity = '0.45';
+        label.style.cursor = 'not-allowed';
+        label.title = 'อีเวนต์จังหวัดศรีสะเกษสิ้นสุดแล้ว';
+        const closedNote = document.createElement('small');
+        closedNote.textContent = 'จบอีเวนต์แล้ว';
+        label.querySelector('span').append(closedNote);
+      }
       label.querySelector('input').addEventListener('change', () => {
         selectedProvince = event;
         byId('yf-selected-name').textContent = 'จังหวัด'+event.name;
         byId('yf-selected-en').innerHTML = landmark(event.key)+'<span>'+event.en+'<small>THAILAND</small></span>';
         syncStep(1);
-        /* Rebuild rather than hide: previous province selections cannot leak into eventDates. */
+
         byId('yf-dates').replaceChildren();
         event.dates.forEach(date => {
           const dateLabel = document.createElement('label');
@@ -2051,8 +1954,8 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
     window.updateEventCount = updateSummary;
     byId('yf-next').addEventListener('click', () => window.nextStep(1));
 
-    /* Combine agriculture + marketing into one screen, retaining all IDs and handlers.
-       Leave the empty #step4 in place for older functions that iterate IDs 1..4. */
+
+
     const third = byId('step3');
     const fourth = byId('step4');
     third.querySelector('.navigation')?.remove();
@@ -2103,7 +2006,7 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
       if (Number(step) >= 3) return window.showStep(2);
       return typeof oldPreviousStep === 'function' ? oldPreviousStep.call(this,step) : window.showStep(1);
     };
-    // Associate original unlinked labels with their input for keyboard/screen reader users.
+
     document.querySelectorAll('.field').forEach(field => {
       const label = field.querySelector('label.main-label');
       const control = field.querySelector('input[id],select[id]');
@@ -2126,57 +2029,3 @@ body.yf-ready{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;color:#2525
 
 </body>
 </html>
-
-<script>
-/* 2026-10-02: dealer and purchase plan are independent required questions. */
-(function () {
-  const originalValidate = validateAgricultureAndTractor;
-  const originalCollect = collectFormData;
-  window.handleProductInterest = function (input) {
-    if (input.id === 'notInterested' && input.checked) {
-      document.querySelectorAll('input[name="product_interest"]').forEach(el => { if (el !== input) el.checked = false; });
-    } else if (input.checked) $('notInterested').checked = false;
-    $('interestFollowup').classList.remove('hidden');
-    togglePurchaseCondition();
-  };
-  window.validateAgricultureAndTractor = function () {
-    if (!value('current_tractor')) { showError('กรุณาตอบว่าปัจจุบันท่านมีรถแทรกเตอร์หรือไม่'); $('current_tractor').focus(); return false; }
-    if (!choices('product_interest').length) { showError('กรุณาเลือกผลิตภัณฑ์ที่สนใจ หรือเลือกไม่สนใจผลิตภัณฑ์ในขณะนี้'); $('notInterested').focus(); return false; }
-    if (!value('dealer')) { showError('กรุณาเลือกตัวแทนจำหน่ายที่ท่านรู้จัก หรือเลือกอื่นๆ'); $('dealer').focus(); return false; }
-    if (!dealerData.includes(value('dealer'))) { showError('กรุณาเลือกตัวแทนจำหน่ายจากรายการ หรือเลือกอื่นๆ'); $('dealer').focus(); return false; }
-    if (value('dealer') === 'อื่นๆ' && !value('dealer_other')) { showError('กรุณาระบุตัวแทนจำหน่ายอื่นๆ'); $('dealer_other').focus(); return false; }
-    if (!value('purchase_plan')) { showError('กรุณาเลือกแผนการซื้อ'); $('purchase_plan').focus(); return false; }
-    if (value('purchase_plan') !== 'ยังไม่มีแผน' && !value('purchase_condition')) { showError('กรุณาเลือกว่าท่านสนใจรถมือหนึ่ง มือสอง หรือกำลังตัดสินใจ'); $('purchase_condition').focus(); return false; }
-    return originalValidate();
-  };
-  window.collectFormData = function () {
-    const data = originalCollect();
-    data.dealer = value('dealer') === 'อื่นๆ' ? 'อื่นๆ : ' + value('dealer_other') : value('dealer');
-    data.purchasePlan = value('purchase_plan');
-    return data;
-  };
-  function mountRequiredQuestions() {
-    $('interestFollowup').classList.remove('hidden', 'conditional');
-    ['dealer', 'purchase_plan'].forEach(id => $(id).required = true);
-    document.querySelectorAll('#step3 .main-label').forEach(label => {
-      if (label.parentElement.contains($('news_channel'))) return;
-      if (!label.querySelector('.required')) label.insertAdjacentHTML('beforeend', ' <span class="required">*</span>');
-    });
-    [['dealer_other', 'โปรดระบุตัวแทนจำหน่ายอื่นๆ'], ['other_brand_text', 'โปรดระบุยี่ห้อรถแทรกเตอร์อื่นๆ']].forEach(([id, text]) => {
-      const input = $(id);
-      const label = document.createElement('label');
-      label.htmlFor = id;
-      label.className = 'main-label hidden';
-      label.innerHTML = text + ' <span class="required">*</span>';
-      input.before(label);
-      const sync = () => { const visible = !input.classList.contains('hidden'); label.classList.toggle('hidden', !visible); input.required = visible; };
-      new MutationObserver(sync).observe(input, { attributes: true, attributeFilter: ['class'] });
-      sync();
-    });
-    togglePurchaseCondition();
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountRequiredQuestions, { once: true });
-  else mountRequiredQuestions();
-})();
-</script>
-
