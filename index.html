@@ -18,7 +18,6 @@
     const fromCheckin = new URLSearchParams(location.search).get('from') === 'checkin';
     const appUrl = new URL('https://script.google.com/macros/s/AKfycbxmRI2xGW9K9mDrpADuOIkqwJXc44p-M3FBx4txdkLsbWrcytl-78ZMl5Q45BJ1t8dp/exec');
     if (fromCheckin) appUrl.searchParams.set('from', 'checkin');
-    appUrl.searchParams.set('v', Date.now().toString());
     document.getElementById('registrationApp').src = appUrl.toString();
   </script>
 </body>
